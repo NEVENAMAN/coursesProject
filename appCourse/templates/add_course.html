@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Course</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/master.css' %}">
+    <link rel="stylesheet" href="{% static 'https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css' %}" >
+    <link rel="stylesheet" href="{% static 'css/docs_min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap_min.css' %}">
+    <style>
+        .container{
+            width:1000px;
+            margin:100px auto;
+        }
+        .actions{
+            display: flex;
+            justify-content: space-between;
+        }
+        .error_message{
+            color:red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="add">
+            <h1>Add a new course </h1>
+            <form action="/add_course" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="form-group">
+                        <label for="disabledTextInput">Name </label>
+                        <input type="text" name="name" class="form-control" placeholder="name">
+                        {% for message in messages %}
+                            {% if message.extra_tags == 'name' %}
+                                <p class="error_message">* {{message}}</p>
+                            {% endif %}
+                        {% endfor %}
+                        
+                    </div>
+                    <div class="form-group">
+                        <label for="disabledTextInput">Description</label>
+                        <textarea name="desc" class="form-control" placeholder="Description"></textarea>
+                        {% for message in messages %}
+                            {% if message.extra_tags == 'desc' %}
+                            <p class="error_message">* {{message}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </fieldset>
+            </form>
+        </div><br>
+        <div class="course">
+            <h1>Courses</h1><br>
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Course Name </th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Date Added</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for course in courses %}
+                <tr>
+                    <th scope="row">{{course.name}}</th>
+                    <td>{{course.desc}}</td>
+                    <td>{{course.created_at}}</td>
+                    <td class="actions">
+                        <form action="/del_course" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="del_course_id" value="{{course.id}}">
+                            <input class="btn btn-primary" type="submit" value="delete">
+                        </form>
+                        <form action="/comment_on_course_page" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="comment_course_id" value="{{course.id}}">
+                            <input class="btn btn-primary" type="submit" value="Comment">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+</body>
+</html>

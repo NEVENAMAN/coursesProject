@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>post comment on course</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/master.css' %}">
+    <link rel="stylesheet" href="{% static 'https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css' %}" >
+    <link rel="stylesheet" href="{% static 'css/docs_min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap_min.css' %}">
+    <style>
+        .container{
+            width:1000px;
+            margin:100px auto;
+        }
+        .card{
+            box-shadow: 4px 4px 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Post comment on Course {{course.name}}</h1><br>
+        <div class="post_comment">
+            <form action="/comment_on_course_process" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="form-group">
+                        <textarea name="desc" class="form-control" placeholder="write comment .."></textarea>
+                    </div>
+                    <input type="hidden" name="comment_course_id" value="{{course.id}}">
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </fieldset>
+            </form>
+        </div><br><br>
+        {% for comment in comments %}
+        <div class="commentes">
+        <div class="card">
+            <h5 class="card-header">Comment</h5>
+            <div class="card-body">
+              <h5 class="card-title">{{course.name}}</h5>
+              <p class="card-text">{{comment.desc}}</p>
+              <a href="#" class="btn btn-primary">Like</a>
+            </div>
+            </div>
+          </div>
+        {% endfor %}
+
+    </div>
+</body>
+</html>
